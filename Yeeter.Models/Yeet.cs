@@ -3,8 +3,13 @@ public class Yeet
 {
     public string Id { get; set; }
     public string Text { get; set; }
+    public string Name { get; set; }
+    public string Handle { get; set; }
 
-    public Yeet(string text)
+    public Yeet(
+        string text,
+        string name,
+        string handle)
     {
         var random = new Random();
         string allOptions = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -13,5 +18,7 @@ public class Yeet
             Id += allOptions[random.Next(allOptions.Length)];
         }
         Text = text;
+        Name = name;
+        Handle = handle;
     }
 }

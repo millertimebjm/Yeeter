@@ -24,6 +24,8 @@
                                             border: 1px solid black;"></div> 
                                         </div>
                                         <div class="col-lg-11 col-md-10">
+                                            <b>@yeet.Name</b> @yeet.Handle
+                                            <br/>
                                             @yeet.Text
                                         </div>
                                     </div>
@@ -43,6 +45,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        DataBind = await HttpClient.GetFromJsonAsync<IEnumerable<Yeet>>("http://localhost:5107?count=5");
+        DataBind = await HttpClient.GetFromJsonAsync<IEnumerable<Yeet>>("http://localhost:5107?count=20");
     }
 }

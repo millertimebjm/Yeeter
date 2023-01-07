@@ -48,7 +48,10 @@ app.MapGet("/", (int? count) =>
     var yeets = new List<Yeet>();
     for (int i = 0; i < count; i++)
     {
-        yeets.Add(new Yeet(string.Join(" ", Faker.Lorem.Sentences(3))));
+        yeets.Add(new Yeet(
+            string.Join(" ", Faker.Lorem.Sentences(3)),
+            Faker.Name.FullName(),
+            "@" + Faker.Name.Last() + Faker.Name.First()));
     }
     return yeets;
 });
