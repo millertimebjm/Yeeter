@@ -1,26 +1,48 @@
-﻿@using Faker
-@page "/"
+﻿@page "/"
+@inject HttpClient HttpClient
+@using Yeeter.Models
 
 <PageTitle>Yeeter</PageTitle>
 
 <div class="container">
-    <div class="row" style="display: flex;
-  justify-content: center;
-  align-items: center;">
-        <div class="col-md-6 ">
-            <div class="card bg-light" style="width:100%">
-                <div class="card-body">
+    <div class="row">
+        <div class="offset-lg-2 col-lg-8 col-md-12">
+            @if (DataBind != null)
+            {
+                foreach (var yeet in DataBind)
+                {
                     <div class="row">
-                        <div class="col-md-12">
-                            @FakeTweek.Text(140)
+                        <div class="col-12 col-12" style="display: flex;
+                            justify-content: center;
+                            align-items: center;">
+                            <div class="card bg-light" style="width:100%">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-1 col-md-2">
+                                            <div style="width: 50px;
+                                            height: 50px;
+                                            border: 1px solid black;"></div> 
+                                        </div>
+                                        <div class="col-lg-11 col-md-10">
+                                            @yeet.Text
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                }
+            }
         </div>
     </div>
 </div>
 
+
 @code {
-    string FakeTweet => Tweet.Tweet(140);
+    private IEnumerable<Yeet>? DataBind = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        DataBind = await HttpClient.GetFromJsonAsync<IEnumerable<Yeet>>("http://localhost:5107?count=5");
+    }
 }
