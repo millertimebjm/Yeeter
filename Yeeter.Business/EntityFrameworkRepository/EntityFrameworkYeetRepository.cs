@@ -1,10 +1,10 @@
 using Yeeter.Models;
 
-namespace Yeeter.Business.CosmosRepository;
+namespace Yeeter.Business.EntityFrameworkRepository;
 
-public class EfYeetRepository : IYeetRepository
+public class EntityFrameworkYeetRepository : IYeetRepository
 {
-    public EfYeetRepository()
+    public EntityFrameworkYeetRepository()
     {
 
     }

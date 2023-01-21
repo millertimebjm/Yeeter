@@ -1,24 +1,22 @@
-﻿namespace Yeeter.Models;
+﻿using Yeeter.Common;
+
+namespace Yeeter.Models;
 public class Yeet
 {
     public string Id { get; set; }
     public string Text { get; set; }
-    public string Name { get; set; }
-    public string Handle { get; set; }
+    public string UserId { get; set; }
+    public DateTime CreatedDate { get; set; }
+
+    public Yeet() { }
 
     public Yeet(
         string text,
-        string name,
-        string handle)
+        string userId)
     {
-        var random = new Random();
-        string allOptions = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        for (int i = 0; i < 7; i++)
-        {
-            Id += allOptions[random.Next(allOptions.Length)];
-        }
+        Id = IdGenerator.Generate();
         Text = text;
-        Name = name;
-        Handle = handle;
+        UserId = userId;
+        CreatedDate = DateTime.UtcNow;
     }
 }
