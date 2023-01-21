@@ -10,7 +10,7 @@ public class CosmosYeetRepository : IYeetRepository
         _client = client;
     }
 
-    public async Task<Yeet> GetYeet(string id)
+    public async Task<Yeet?> GetYeet(string id)
     {
 
         return await _client.GetKey<Yeet>(id, id);
