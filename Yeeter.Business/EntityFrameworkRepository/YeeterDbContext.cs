@@ -7,24 +7,21 @@ namespace Yeeter.Business.EntityFrameworkRepository;
 
 public class YeeterDbContext : DbContext
 {
-    public readonly string _sqlServerConnectionString;
-    public readonly string _inMemoryConnectionString;
+    public readonly IYeeterConfiguration _yeeterConfiguration;
     public YeeterDbContext(
-        string sqlServerConnectionString,
-        string inMemoryConnectionString) : base()
+        IYeeterConfiguration yeeterConfiguration) : base()
     {
-        _sqlServerConnectionString = sqlServerConnectionString;
-        _inMemoryConnectionString = inMemoryConnectionString;
+        _yeeterConfiguration = yeeterConfiguration;
     }
 
-    public override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
         {
-            if (!string.IsNullOrWhiteSpace(_sqlServerConnectionString))
-                optionsBuilder.UseSqlServer(_sqlServerConnectionString);
-            if (!string.IsNullOrWhiteSpace(_inMemoryConnectionString))
-                optionsBuilder.UsInMemory(_inMemoryConnectionString);
+            if (!string.IsNullOrWhiteSpace(_yeeterConfiguration.GetYeeterSqlServerConnectionString()))
+                optionsBuilder.UseSqlServer(_yeeterConfiguration.GetYeeterSqlServerConnectionString());
+            else if (!string.IsNullOrWhiteSpace(_yeeterConfiguration.GetYeeterInMemoryDatabaseConnectionString()))
+                optionsBuilder.UseInMemoryDatabase(_yeeterConfiguration.GetYeeterInMemoryDatabaseConnectionString());
             else
                 throw new NotImplementedException();
         }
@@ -38,7 +35,12 @@ public class YeeterDbContext : DbContext
         //Configure default schema
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Yeet>().ToTable("Yeet");
-        modelBuilder.Entity<User>().ToTable("User");
+        modelBuilder.Entity<Yeet>()
+            .ToTable("Yeet")
+            .HasOne(_ => _.User)
+            .WithMany(_ => _.Yeets)
+            .HasForeignKey(_ => _.UserId);
+        modelBuilder.Entity<User>()
+            .ToTable("User");
     }
 }

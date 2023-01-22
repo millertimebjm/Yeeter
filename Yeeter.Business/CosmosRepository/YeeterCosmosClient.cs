@@ -11,7 +11,7 @@ public class YeeterCosmosClient
         _connectionString = connectionString;
     }
 
-    private CosmosClient _client = null;
+    private CosmosClient? _client = null;
     private CosmosClient Client
     {
         get
@@ -30,7 +30,7 @@ public class YeeterCosmosClient
             return _client;
         }
     }
-    private Database _database = null;
+    private Database? _database = null;
     private Database Database
     {
         get
@@ -42,7 +42,7 @@ public class YeeterCosmosClient
             return _database;
         }
     }
-    private Container _container = null;
+    private Container? _container = null;
     private Container Container
     {
         get
@@ -57,9 +57,14 @@ public class YeeterCosmosClient
 
     public async Task<IEnumerable<T>> GetManyAsync<T>(string query)
     {
+        return await GetManyAsync<T>(query, new { });
+    }
+
+    public async Task<IEnumerable<T>> GetManyAsync<T>(string query, dynamic parameters)
+    {
         var items = new List<T>();
 
-        var iterator = Container.GetItemQueryIterator<T>(query);
+        var iterator = Container.GetItemQueryIterator<T>(query, parameters);
         while (iterator.HasMoreResults)
         {
             var response = await iterator.ReadNextAsync();
@@ -71,7 +76,7 @@ public class YeeterCosmosClient
     public async Task<T> GetKey<T>(string id, string key)
     {
         var readKey = new PartitionKey(id);
-        ItemResponse<T> readResponse = await _container.ReadItemAsync<T>(
+        ItemResponse<T> readResponse = await Container.ReadItemAsync<T>(
             id: id,
             partitionKey: readKey
         );
