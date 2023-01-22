@@ -37,4 +37,9 @@ ORDER BY c.CreatedDate DESC
         ";
         return await _client.GetManyAsync<Yeet>(query, new { id });
     }
+
+    public async Task InitializeData()
+    {
+        throw new NotImplementedException();
+    }
 }

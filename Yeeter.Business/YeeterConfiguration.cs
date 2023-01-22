@@ -21,6 +21,16 @@ public class YeeterConfiguration : IYeeterConfiguration
         return _yeeterCosmosConnectionString;
     }
 
+    private bool _dataInitialized;
+    public bool GetYeeterDataInitialized()
+    {
+        return _dataInitialized;
+    }
+    public void SetYeeterDataInitialized(bool dataInitialized)
+    {
+        _dataInitialized = dataInitialized;
+    }
+
     public YeeterConfiguration(
         string yeeterInMemoryDatabaseConnectionString = null,
         string yeeterSqlServerConnectionString = null,

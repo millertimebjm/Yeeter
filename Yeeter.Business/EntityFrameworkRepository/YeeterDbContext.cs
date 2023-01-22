@@ -38,8 +38,8 @@ public class YeeterDbContext : DbContext
         modelBuilder.Entity<Yeet>()
             .ToTable("Yeet")
             .HasOne(_ => _.User)
-            .WithMany(_ => _.Yeets)
-            .HasForeignKey(_ => _.UserId);
+            .WithMany(_ => _.Yeets);
+        // .HasForeignKey(_ => _.UserId);
         modelBuilder.Entity<User>()
             .ToTable("User");
     }
