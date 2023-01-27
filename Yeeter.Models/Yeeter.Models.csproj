@@ -4,6 +4,10 @@
     <ProjectReference Include="..\Yeeter.Common\Yeeter.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

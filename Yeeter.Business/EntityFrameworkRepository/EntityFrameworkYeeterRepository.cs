@@ -34,6 +34,8 @@ public class EntityFrameworkYeeterRepository : IYeeterRepository
 
         return await _yeeterDbContext
             .Yeets
+            .AsNoTracking()
+            .Include(_ => _.User)
             .OrderByDescending(_ => _.CreatedDate)
             .Take(count)
             .ToListAsync();

@@ -8,7 +8,8 @@ public class User
     public string Name { get; set; }
     public string Handle { get; set; }
     public DateTime CreatedDate { get; set; }
-    public List<Yeet> Yeets { get; set; }
+    //public List<Yeet> Yeets { get; set; }
+    public virtual ICollection<Yeet> Yeets { get; set; }
 
     public User() { }
 

@@ -1,9 +1,7 @@
-using Faker;
-using Yeeter.Models;
-using Microsoft.EntityFrameworkCore;
 using Yeeter.Business;
 using Yeeter.Business.EntityFrameworkRepository;
 using Microsoft.AspNetCore.Mvc;
+using Yeeter.Common;
 
 const string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -43,34 +41,29 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/", ([FromServices] IYeeterRepository yeeterRepository, int? count) =>
+app.MapGet("/", async ([FromServices] IYeeterRepository yeeterRepository, int? count) =>
 {
     if (count.HasValue && count.Value > 0)
-    {
         count = count.Value > 20 ? 20 : count;
-    }
     else
-    {
         count = 5;
-    }
 
-    return yeeterRepository.GetYeets(count.Value);
-
-    // var yeets = new List<Yeet>();
-    // for (int i = 0; i < count; i++)
-    // {
-    //     yeets.Add(new Yeet()
-    //     {
-    //         Text = string.Join(" ", Faker.Lorem.Sentences(3)),
-    //         CreatedDate = DateTime.UtcNow,
-    //         User = new User()
-    //         {
-    //             Name = Faker.Name.FullName(),
-    //             Handle = "@" + Faker.Name.Last() + Faker.Name.First(),
-    //         },
-    //     });
-    // }
-    // return yeets;
+    var yeets = await yeeterRepository.GetYeets(count.Value);
+    return Results.Text(ApiSerializer.SerializeForMapGet(yeets),
+        contentType: "application/json");
 });
+
+app.MapGet("/u/{userId}", async ([FromServices] IYeeterRepository yeeterRepository, string userId, int? count) =>
+{
+    if (count.HasValue && count.Value > 0)
+        count = count.Value > 20 ? 20 : count;
+    else
+        count = 5;
+
+    var yeets = await yeeterRepository.GetYeetsByUserId(userId, count.Value);
+    return Results.Text(ApiSerializer.SerializeForMapGet(yeets),
+        contentType: "application/json");
+});
+
 
 app.Run();
