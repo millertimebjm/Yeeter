@@ -41,29 +41,42 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/", async ([FromServices] IYeeterRepository yeeterRepository, int? count) =>
+app.MapGet("/yeets", async ([FromServices] IYeeterRepository yeeterRepository, int? count) =>
 {
-    if (count.HasValue && count.Value > 0)
-        count = count.Value > 20 ? 20 : count;
-    else
-        count = 5;
-
-    var yeets = await yeeterRepository.GetYeets(count.Value);
+    var sanitizedCount = Yeeter.Common.InputSanitation.SanitizeCount(count);
+    var yeets = await yeeterRepository.GetYeets(sanitizedCount);
     return Results.Text(ApiSerializer.SerializeForMapGet(yeets),
         contentType: "application/json");
 });
 
-app.MapGet("/u/{userId}", async ([FromServices] IYeeterRepository yeeterRepository, string userId, int? count) =>
+app.MapGet("/yeets/{yeetId}", async ([FromServices] IYeeterRepository yeeterRepository, string yeetId, int? count) =>
 {
-    if (count.HasValue && count.Value > 0)
-        count = count.Value > 20 ? 20 : count;
-    else
-        count = 5;
+    if (string.IsNullOrWhiteSpace(yeetId))
+        return Results.NotFound();
 
-    var yeets = await yeeterRepository.GetYeetsByUserId(userId, count.Value);
-    return Results.Text(ApiSerializer.SerializeForMapGet(yeets),
+    var sanitizedCount = Yeeter.Common.InputSanitation.SanitizeCount(count);
+    var yeet = await yeeterRepository.GetYeet(yeetId);
+
+    if (yeet is null)
+        return Results.NotFound();
+
+    return Results.Text(ApiSerializer.SerializeForMapGet(yeet),
         contentType: "application/json");
 });
 
+app.MapGet("/users/{userId}", async ([FromServices] IYeeterRepository yeeterRepository, string userId, int? count) =>
+{
+    if (string.IsNullOrWhiteSpace(userId))
+        return Results.NotFound();
+
+    var sanitizedCount = Yeeter.Common.InputSanitation.SanitizeCount(count);
+    var user = await yeeterRepository.GetYeetsByUserId(userId, sanitizedCount);
+
+    if (user is null)
+        return Results.NotFound();
+
+    return Results.Text(ApiSerializer.SerializeForMapGet(user),
+            contentType: "application/json");
+});
 
 app.Run();

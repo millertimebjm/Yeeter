@@ -22,15 +22,15 @@ public class EntityFrameworkYeeterRepository : IYeeterRepository
         if (!IdGenerator.IsValidId(id))
             return null;
 
-        return await _yeeterDbContext.Yeets.SingleOrDefaultAsync(_ => _.Id == id);
+        return await _yeeterDbContext
+            .Yeets
+            .Include(_ => _.User)
+            .SingleOrDefaultAsync(_ => _.Id == id);
     }
 
     public async Task<IEnumerable<Yeet>> GetYeets(int count)
     {
         await InitializeData();
-
-        if (count < 1) count = 1;
-        if (count > 20) count = 20;
 
         return await _yeeterDbContext
             .Yeets
@@ -41,17 +41,14 @@ public class EntityFrameworkYeeterRepository : IYeeterRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Yeet>> GetYeetsByUserId(string id, int count)
+    public async Task<User?> GetYeetsByUserId(string id, int count)
     {
-        if (count < 1) count = 1;
-        if (count > 20) count = 20;
-
         return await _yeeterDbContext
-            .Yeets
-            .Where(_ => _.UserId == id)
-            .OrderByDescending(_ => _.CreatedDate)
-            .Take(count)
-            .ToListAsync();
+            .Users
+            .Include(_ => _.Yeets
+                .OrderByDescending(_ => _.CreatedDate)
+                .Take(count))
+            .SingleOrDefaultAsync(_ => _.Id == id);
     }
 
     public async Task InitializeData()

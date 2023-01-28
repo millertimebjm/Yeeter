@@ -36,11 +36,11 @@ public class YeeterDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Yeet>()
-            .ToTable("Yeet");
+            .ToTable("Yeet")
+            .HasOne(_ => _.User)
+            .WithMany(_ => _.Yeets);
+        // .HasForeignKey(_ => _.UserId);
         modelBuilder.Entity<User>()
             .ToTable("User");
-        // .HasMany(_ => _.Yeets)
-        // .WithOne(_ => _.User)
-        // .HasForeignKey(_ => _.UserId);
     }
 }

@@ -27,7 +27,7 @@ ORDER BY c.CreatedDate DESC
         return await _client.GetManyAsync<Yeet>(query);
     }
 
-    public async Task<IEnumerable<Yeet>> GetYeetsByUserId(string id, int count)
+    public async Task<User?> GetYeetsByUserId(string id, int count)
     {
         var query = @$"
 SELECT TOP {count} c.Yeets
@@ -35,7 +35,7 @@ FROM c
 WHERE c.Id = @Id
 ORDER BY c.CreatedDate DESC
         ";
-        return await _client.GetManyAsync<Yeet>(query, new { id });
+        return await _client.GetKey<User>(query, id);
     }
 
     public async Task InitializeData()
